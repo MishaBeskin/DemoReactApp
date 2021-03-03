@@ -1,13 +1,13 @@
 import React, { lazy } from "react";
+import { connect } from "react-redux";
 import pet, { Photo, AnimalResponse } from "@frontendmasters/pet";
 import Carousel from "./Carousel";
 import ErrorBoundary from "./ErrorBoundary";
-import ThemeContext from "./ThemeContext";
 import { navigate, RouteComponentProps } from "@reach/router";
 
 const Modal = lazy(() => import("./Modal"));
 
-class Details extends React.Component<RouteComponentProps<{ id: string }>> {
+class Details extends React.Component<RouteComponentProps<{ id: string, theme: string }>> {
 
     public state = {
         loading: true,
@@ -58,13 +58,9 @@ class Details extends React.Component<RouteComponentProps<{ id: string }>> {
                 <div>
                     <h1>{name}</h1>
                     <h2>{`${animal} — ${breed} — ${location}`}</h2>
-                    <ThemeContext.Consumer>
-                        {([theme]) => (
-                            <button style={{ backgroundColor: theme }} onClick={this.toggleModal}>
-                                Adopt {name}
-                            </button>
-                        )}
-                    </ThemeContext.Consumer>;
+                    <button style={{ backgroundColor: this.props.theme }} onClick={this.toggleModal}>
+                        Adopt {name}
+                    </button>
                     <p>{description}</p>
                     {
                         showModal ? (
@@ -85,10 +81,14 @@ class Details extends React.Component<RouteComponentProps<{ id: string }>> {
     }
 }
 
+const mapStateToProps = ({ theme }) => ({ theme });
+
+const WrappedDetails = connect(mapStateToProps)(Details);
+
 export default function DetailsErrorBoundary(props: RouteComponentProps<{ id: string }>) {
     return (
         <ErrorBoundary>
-            <Details {...props} />
+            <WrappedDetails  {...props} />
         </ErrorBoundary>
     );
 }
