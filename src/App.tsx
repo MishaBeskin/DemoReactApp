@@ -1,16 +1,16 @@
-import React, { useState, lazy, Suspense } from "react";
+import React, { lazy, Suspense } from "react";
 import ReactDOM from "react-dom";
 import { Router } from "@reach/router";
-import ThemeContext from "./ThemeContext";
+import { Provider } from "react-redux";
+import store from "./store";
 import NavBar from "./NavBar";
 
 const Details = lazy(() => import("./Details"));
 const SearchParams = lazy(() => import("./SearchParams"));
 
 const App = () => {
-  const theme = useState("peru");
   return (
-    <ThemeContext.Provider value={theme}>
+    <Provider store={store}>
       <div>
         <NavBar />
         <Suspense fallback={<h1>loading route …</h1>}>
@@ -19,8 +19,8 @@ const App = () => {
             <Details path="/details/:id" />
           </Router>
         </Suspense>;
-      </div>
-    </ThemeContext.Provider>
+    </div>
+    </Provider>
   );
 };
 
